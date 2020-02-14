@@ -1,5 +1,4 @@
-include color.mk
-include help.mk
+include *.mk
 
 release: # Perform a release
 	@echo "$(YEL)Performing a release$(END)"
