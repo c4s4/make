@@ -1,5 +1,6 @@
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 
+.PHONY: release
 release: # Perform a release
 	@echo "$(YEL)Performing release$(END)"
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
@@ -8,6 +9,7 @@ release: # Perform a release
 	git tag -a $${VERSION} -m  "Release $${VERSION}"; \
 	git push origin $${VERSION}
 
+.PHONY: branch
 branch: # Create a branch from master
 	@echo "$(YEL)Creating a branch from master$(END)"
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
@@ -16,6 +18,7 @@ branch: # Create a branch from master
 	git checkout -b $${BRANCH}; \
 	git push -u origin $${BRANCH}
 
+.PHONY: squash
 squash: # Squash branch and merge on master
 	@echo "$(YEL)Squash branch and merge on master$(END)"
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
