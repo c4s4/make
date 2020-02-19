@@ -1,3 +1,5 @@
+NAME=$(shell basename $(pwd))
+BUILD_DIR=build
 ifeq ($(GOTOOLS), )
 	GOTOOLS=$${GOPATH}
 endif
@@ -25,9 +27,40 @@ TOOLS=github.com/mitchellh/gox \
       golang.org/x/tools/cmd/guru \
       golang.org/x/tools/gopls \
 
+.PHONY: tools
 tools: # Install Go tools
 	@echo "$(YEL)Installing Go tools$(END)"
 	@for tool in $(TOOLS); do \
 		echo "Installing $$tool"; \
 		GOPATH=$(GOTOOLS) GO111MODULE=off go get -u $$tool; \
 	done
+
+.PHONY: fmt
+fmt: # Format Go source code
+	@go fmt ./...
+
+.PHONY: build
+build: clean # Build binary
+	@mkdir -p $(BUILD_DIR)
+	@go build -ldflags "-s -f" -o $(BUILD_DIR)/$(NAME) ./...
+
+.PHONY: binaries
+binaries: clean # Build binaries
+	@echo "$(YEL)Building binaries...$(END)"
+	@mkdir -p $(BUILD_DIR)/bin
+	@gox -ldflags "-s -f" -output=$(BUILD_DIR)/bin/$(NAME)-{{.OS}}-{{.Arch}} ./...
+
+.PHONY: install
+install: # Install binaries in GOPATH
+	@echo "$(YEL)Installing binaries in GOPATH$(END)"
+	@cp $(BUILD_DIR)/$(NAME) $$GOPATH/bin/
+
+.PHONY: run
+run: build # Run make tools
+	@echo "$(YEL)Running make tools$(END)"
+	@$(BUILD_DIR)/$(NAME)
+
+.PHONY: clean
+clean: # Clean generated files and test cache
+	@rm -rf $(BUILD_DIR)
+	@go clean -testcache
