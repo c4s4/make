@@ -1,3 +1,5 @@
+# Parent makefile for Color
+
 # normal colors
 bla="\\033[30m"
 red="\\033[31m"

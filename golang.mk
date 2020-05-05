@@ -1,5 +1,8 @@
-NAME=$(shell basename $(pwd))
+# Parent makefile for Go projects
+
+GONAME=$(shell basename $(pwd))
 BUILD_DIR=build
+GOARGS=
 ifeq ($(GOTOOLS), )
 	GOTOOLS=$${GOPATH}
 endif
@@ -37,30 +40,33 @@ tools: # Install Go tools
 
 .PHONY: fmt
 fmt: # Format Go source code
+      @echo "$(YEL)Formatting Go source code$(END)"
 	@go fmt ./...
 
 .PHONY: build
 build: clean # Build binary
+      @echo "$(YEL)Building binary$(END)"
 	@mkdir -p $(BUILD_DIR)
-	@go build -ldflags "-s -f" -o $(BUILD_DIR)/$(NAME) ./...
+	@go build -ldflags "-s -f" -o $(BUILD_DIR)/$(GONAME) ./...
 
 .PHONY: binaries
 binaries: clean # Build binaries
-	@echo "$(YEL)Building binaries...$(END)"
+	@echo "$(YEL)Building binaries$(END)"
 	@mkdir -p $(BUILD_DIR)/bin
-	@gox -ldflags "-s -f" -output=$(BUILD_DIR)/bin/$(NAME)-{{.OS}}-{{.Arch}} ./...
+	@gox -ldflags "-s -f" -output=$(BUILD_DIR)/bin/$(GONAME)-{{.OS}}-{{.Arch}} ./...
 
 .PHONY: install
 install: # Install binaries in GOPATH
 	@echo "$(YEL)Installing binaries in GOPATH$(END)"
-	@cp $(BUILD_DIR)/$(NAME) $$GOPATH/bin/
+	@cp $(BUILD_DIR)/$(GONAME) $${GOPATH}/bin/
 
 .PHONY: run
-run: build # Run make tools
-	@echo "$(YEL)Running make tools$(END)"
-	@$(BUILD_DIR)/$(NAME)
+run: build # Run project
+	@echo "$(YEL)Running project$(END)"
+	@$(BUILD_DIR)/$(GONAME) $(GOARGS)
 
 .PHONY: clean
 clean: # Clean generated files and test cache
+	@echo "$(YEL)Cleaning generated files and test cache$(END)"
 	@rm -rf $(BUILD_DIR)
 	@go clean -testcache

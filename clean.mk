@@ -1,3 +1,5 @@
+# Parent makefile for Build directory
+
 BUILD_DIR=build
 
 .PHONY: clean
