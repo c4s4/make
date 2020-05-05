@@ -1,14 +1,13 @@
 # Parent makefile for Python
 
+include ~/.make/clean.mk
+
 PYTHON_HOME=$(shell pwd)
 PYTHON_VENV=$(PYTHON_HOME)/venv
 PYTHON=$(PYTHON_VENV)/bin/python
 PYTHON_REQ=$(PYTHON_HOME)/requirements.txt
 PYTHON_LINT=$(PYTHON_HOME)/pylint.cfg
 PYTHON_MOD=$(shell basename $(shell pwd))
-
-toto:
-	@echo "module: $(PYTHON_MOD)"
 
 .PHONY: venv
 venv: # Create virtual environment
@@ -31,3 +30,16 @@ lint: # Validate source code
 test: # Run unit tests
 	@echo "$(YEL)Running unit tests$(END)"
 	$(PYTHON) -m unittest
+
+.PHONY: dist
+dist: clean # Generate distribution archive
+	@echo "$(YEL)Generating distribution archive$(END)"
+	mkdir -p $(BUILD_DIR)
+	cp -r $(PYTHON_MOD) LICENSE MANIFEST.in README.rst setup.py $(BUILD_DIR)/
+	sed -i 's/0.0.0/$(TAG)/g' $(BUILD_DIR)/setup.py
+	cd $(BUILD_DIR) && $(PYTHON) setup.py sdist -d .
+
+.PHONY: upload
+upload: dist # Upload distribution archive
+	@echo "$(YEL)Uploading distribution archive$(END)"
+	cd $(BUILD_DIR) && $(PYTHON) setup.py sdist -d . register upload
