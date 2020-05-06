@@ -40,12 +40,12 @@ tools: # Install Go tools
 
 .PHONY: fmt
 fmt: # Format Go source code
-      @echo "$(YEL)Formatting Go source code$(END)"
+	@echo "$(YEL)Formatting Go source code$(END)"
 	@go fmt ./...
 
 .PHONY: build
 build: clean # Build binary
-      @echo "$(YEL)Building binary$(END)"
+	@echo "$(YEL)Building binary$(END)"
 	@mkdir -p $(BUILD_DIR)
 	@go build -ldflags "-s -f" -o $(BUILD_DIR)/$(GONAME) ./...
 
