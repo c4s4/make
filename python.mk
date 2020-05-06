@@ -8,6 +8,8 @@ PYTHON=$(PYTHON_VENV)/bin/python
 PYTHON_REQ=$(PYTHON_HOME)/requirements.txt
 PYTHON_LINT=$(PYTHON_HOME)/pylint.cfg
 PYTHON_MOD=$(shell basename $(shell pwd))
+PYTHON_PKG=$(PYTHON_MOD)
+PYTHON_ITG=echo "Running integration test"
 
 .PHONY: venv
 venv: # Create virtual environment
@@ -35,9 +37,34 @@ test: # Run unit tests
 dist: clean # Generate distribution archive
 	@echo "$(YEL)Generating distribution archive$(END)"
 	mkdir -p $(BUILD_DIR)
-	cp -r $(PYTHON_MOD) LICENSE MANIFEST.in README.rst setup.py $(BUILD_DIR)/
+	cp -r $(PYTHON_MOD) LICENSE* MANIFEST.in setup.py $(BUILD_DIR)/
+	if [ -f README.rst ]; then \
+		cp README.rst $(BUILD_DIR)/; \
+	else \
+		pandoc -f markdown -t rst README.md > $(BUILD_DIR)/README.rst; \
+	fi
 	sed -i 's/0.0.0/$(TAG)/g' $(BUILD_DIR)/setup.py
 	cd $(BUILD_DIR) && $(PYTHON) setup.py sdist -d .
+
+.PHONY: integ
+integ: dist # Run integration test
+	@echo "$(YEL)Running integration test$(END)"
+	@mkdir -p $(BUILD_DIR); \
+	cd $(BUILD_DIR); \
+	$(PYTHON) -m venv venv; \
+	venv/bin/pip install --upgrade pip; \
+	venv/bin/pip install ./$(PYTHON_PKG)-*.tar.gz; \
+	$(PYTHON_ITG)
+
+.PHONY: pypi
+pypi: clean # Test installation from Pypi
+	@echo "$(YEL)Testing installation from Pypi$(END)"
+	@mkdir -p $(BUILD_DIR); \
+	cd $(BUILD_DIR); \
+	$(PYTHON) -m venv venv; \
+	venv/bin/pip install --upgrade pip; \
+	venv/bin/pip install $(PYTHON_PKG); \
+	$(PYTHON_ITG)
 
 .PHONY: upload
 upload: dist # Upload distribution archive
