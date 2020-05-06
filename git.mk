@@ -1,4 +1,4 @@
-# Parent makefile for Git projects
+# Parent makefile for Git (https://github.com/c4s4/make)
 
 CURRENT := $(shell git rev-parse --abbrev-ref HEAD)
 

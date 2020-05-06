@@ -1,4 +1,4 @@
-# Parent makefile for Help
+# Parent makefile for Help (https://github.com/c4s4/make)
 
 include ~/.make/color.mk
 

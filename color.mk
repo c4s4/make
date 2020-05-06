@@ -1,4 +1,4 @@
-# Parent makefile for Color
+# Parent makefile for Color (https://github.com/c4s4/make)
 
 # normal colors
 bla="\\033[30m"

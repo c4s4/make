@@ -1,4 +1,4 @@
-# Parent makefile for Python
+# Parent makefile for Python (https://github.com/c4s4/make)
 
 include ~/.make/clean.mk
 

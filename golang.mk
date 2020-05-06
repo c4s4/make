@@ -1,4 +1,4 @@
-# Parent makefile for Go projects
+# Parent makefile for Golang (https://github.com/c4s4/make)
 
 GONAME=$(shell basename $(pwd))
 BUILD_DIR=build
