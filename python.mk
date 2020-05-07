@@ -1,7 +1,6 @@
 # Parent makefile for Python (https://github.com/c4s4/make)
 
-include ~/.make/clean.mk
-
+BUILD_DIR=build
 PYTHON_HOME=$(shell pwd)
 PYTHON_VENV=$(PYTHON_HOME)/venv
 PYTHON=$(PYTHON_VENV)/bin/python

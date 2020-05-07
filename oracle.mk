@@ -2,8 +2,7 @@
 # Procedure to build Oracle XE database from
 # https://mobiliardbblog.wordpress.com/2017/10/27/oracle-xe-docker-image-including-database-in-less-than-1-4gb-yes-you-can/
 
-include ~/.make/clean.mk
-
+BUILD_DIR=build
 ORACLE_VER=18.4.0
 ORACLE_BASE=-x
 ORACLE_URL=https://www.oracle.com/database/technologies/xe-downloads.html
