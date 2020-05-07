@@ -30,3 +30,8 @@ squash: # Squash branch and merge on master
 	@git merge --squash $(CURRENT)
 	@git commit
 	@git push origin master
+
+.PHONY: tags
+tags: # List tags sorted by version
+	@echo "$(YEL)Listing tags sorted by version$(END)"
+	@git tag | sort -V
