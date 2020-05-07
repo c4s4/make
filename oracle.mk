@@ -1,6 +1,8 @@
 # Makefile for Oracle (https://github.com/c4s4/make)
 # Procedure to build Oracle XE database from
 # https://mobiliardbblog.wordpress.com/2017/10/27/oracle-xe-docker-image-including-database-in-less-than-1-4gb-yes-you-can/
+# Database images at
+# https://www.oracle.com/database/technologies/oracle-database-software-downloads.html
 
 BUILD_DIR=build
 ORACLE_VER=11.2.0.2
