@@ -10,6 +10,8 @@ PYTHON_LINT=$(PYTHON_HOME)/pylint.cfg
 PYTHON_MOD=$(shell basename $(shell pwd))
 PYTHON_PKG=$(PYTHON_MOD)
 PYTHON_ITG=echo "Running integration test"
+# environment file for test (must start with ./ if in same directory)
+PYTHON_ENV=./.env
 
 .PHONY: venv
 venv: # Create virtual environment
@@ -31,6 +33,7 @@ lint: # Validate source code
 .PHONY: test
 test: # Run unit tests
 	@echo "$(YEL)Running unit tests$(END)"
+	@test -f $(PYTHON_ENV) && . $(PYTHON_ENV); \
 	$(PYTHON) -m unittest
 
 .PHONY: dist
