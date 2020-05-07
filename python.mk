@@ -70,3 +70,7 @@ pypi: clean # Test installation from Pypi
 upload: dist # Upload distribution archive
 	@echo "$(YEL)Uploading distribution archive$(END)"
 	cd $(BUILD_DIR) && $(PYTHON) setup.py sdist -d . register upload
+
+.PHONY: release
+release: clean lint test integ tag upload # Release project on Pypi
+	@echo "$(YEL)Released project on Pypi$(END)"
