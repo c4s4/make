@@ -9,13 +9,13 @@ ORACLE_VER=11.2.0.2
 ORACLE_BASE=-x
 ORACLE_URL=https://www.oracle.com/database/technologies/xe-downloads.html
 ORACLE_RPM=oracle-xe-11.2.0-1.0.x86_64.rpm.zip
-ORACLE_SID=test
+ORACLE_SID=XE
 ORACLE_PDB=test
 ORACLE_PWD=test
 ORACLE_CHAR=AL32UTF8
 ORACLE_DATA=~/.oracle/data
 DOCKER_USER=casa
-ORACLE_CLIENT=11
+ORACLE_CLIENT=18
 # For Oracle XE 18
 # ORACLE_VER=18.4.0
 # ORACLE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm
@@ -39,11 +39,11 @@ ora-client: clean # Build image for Oracle client
 	git clone git@github.com:oracle/docker-images.git; \
 	cd docker-images/OracleInstantClient/dockerfiles/$(ORACLE_CLIENT); \
 	docker build --pull -t oracle/instantclient:$(ORACLE_CLIENT) .; \
-	docker tag oracle/instantclient:11 casa/oracle-client:$(ORACLE_CLIENT); \
+	docker tag oracle/instantclient:$(ORACLE_CLIENT) casa/oracle-client:$(ORACLE_CLIENT); \
 	docker push $(DOCKER_USER)/oracle-client
 
-ora-start: # Start Oracle database
-	@echo "$(YEL)Starting Oracle database$(END)"
+ora-run: # Run Oracle database
+	@echo "$(YEL)Runing Oracle database$(END)"
 	@mkdir -p $(ORACLE_DATA)
 	@docker run --name oracle \
 		-p 1521:1521 -p 5500:5500 \
@@ -51,9 +51,13 @@ ora-start: # Start Oracle database
 		-e ORACLE_PDB=$(ORACLE_PDB) \
 		-e ORACLE_PWD=$(ORACLE_PWD) \
 		-e ORACLE_CHARACTERSET=$(ORACLE_CHAR) \
-		-v $(ORACLE_DATA):/opt/oracle/oradata \
+		-v /opt/oracle/oradata \
 		--shm-size=1g \
 		$(DOCKER_USER)/oracle:$(ORACLE_VER)-xe
+
+ora-start: # Start Oracle database
+	@echo "$(YEL)Starting Oracle database$(END)"
+	@docker start oracle
 
 ora-stop: # Stop Oracle database
 	@echo "$(YEL)Stopping Oracle database$(END)"
@@ -61,4 +65,4 @@ ora-stop: # Stop Oracle database
 
 ora-sqlplus: # Generate sqlplus script
 	@echo "$(YEL)Generating sqlplus script$(END)"
-	@echo "#!/bin/sh\n\nset -e\n\ndocker run -ti --rm casa/oracle-client:18 sqlplus test@localhost:1521/test" > sqlplus
+	@echo "#!/bin/sh\n\nset -e\n\ndocker exec -ti oracle sqlplus system/test@XE" > sqlplus
