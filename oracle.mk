@@ -54,3 +54,4 @@ ora-stop: # Stop Oracle database
 ora-sqlplus: # Generate sqlplus script
 	@echo "$(YEL)Generating sqlplus script$(END)"
 	@echo '#!/bin/sh\n# Default connection URL: system/$(ORACLE_PWD)@$(ORACLE_SID)\n\nset -e\n\ndocker exec -i $(DOCKER_NAME) sqlplus "$$@" < /dev/stdin' > sqlplus
+	@chmod +x sqlplus
