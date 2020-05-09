@@ -13,8 +13,8 @@ ORACLE_SID=XE
 ORACLE_PDB=test
 ORACLE_PWD=test
 ORACLE_CHAR=AL32UTF8
-ORACLE_DATA=~/.oracle/data
 DOCKER_USER=casa
+DOCKER_NAME=oracle
 ORACLE_CLIENT=18
 # For Oracle XE 18
 # ORACLE_VER=18.4.0
@@ -44,8 +44,7 @@ ora-client: clean # Build image for Oracle client
 
 ora-run: # Run Oracle database
 	@echo "$(YEL)Runing Oracle database$(END)"
-	@mkdir -p $(ORACLE_DATA)
-	@docker run --name oracle \
+	@docker run --name $(DOCKER_NAME) \
 		-p 1521:1521 -p 5500:5500 \
 		-e ORACLE_SID=$(ORACLE_SID) \
 		-e ORACLE_PDB=$(ORACLE_PDB) \
@@ -57,12 +56,12 @@ ora-run: # Run Oracle database
 
 ora-start: # Start Oracle database
 	@echo "$(YEL)Starting Oracle database$(END)"
-	@docker start oracle
+	@docker start $(DOCKER_NAME)
 
 ora-stop: # Stop Oracle database
 	@echo "$(YEL)Stopping Oracle database$(END)"
-	@docker stop oracle
+	@docker stop $(DOCKER_NAME)
 
 ora-sqlplus: # Generate sqlplus script
 	@echo "$(YEL)Generating sqlplus script$(END)"
-	@echo "#!/bin/sh\n\nset -e\n\ndocker exec -ti oracle sqlplus system/test@XE" > sqlplus
+	@echo '#!/bin/sh\n# Default connection URL: system/$(ORACLE_PWD)@$(ORACLE_SID)\n\nset -e\n\ndocker exec -i $(DOCKER_NAME) sqlplus "$$@" < /dev/stdin' > sqlplus
