@@ -58,3 +58,7 @@ ora-start: # Start Oracle database
 ora-stop: # Stop Oracle database
 	@echo "$(YEL)Stopping Oracle database$(END)"
 	@docker stop oracle
+
+ora-sqlplus: # Generate sqlplus script
+	@echo "$(YEL)Generating sqlplus script$(END)"
+	@echo "#!/bin/sh\n\nset -e\n\ndocker run -ti --rm casa/oracle-client:18 sqlplus test@localhost:1521/test" > sqlplus
