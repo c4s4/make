@@ -15,7 +15,6 @@ ORACLE_PWD=test
 ORACLE_CHAR=AL32UTF8
 DOCKER_USER=casa
 DOCKER_NAME=oracle
-ORACLE_CLIENT=18
 # For Oracle XE 18
 # ORACLE_VER=18.4.0
 # ORACLE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm
@@ -31,16 +30,6 @@ ora-image: clean # Build image for Oracle database
 	./buildDockerImage.sh -v $(ORACLE_VER) $(ORACLE_BASE); \
 	docker tag oracle/database:$(ORACLE_VER)-xe $(DOCKER_USER)/oracle:$(ORACLE_VER)-xe; \
 	docker push $(DOCKER_USER)/oracle
-
-ora-client: clean # Build image for Oracle client
-	@echo "$(YEL)Building image for Oracle client$(END)"
-	@mkdir -p $(BUILD_DIR)
-	@cd $(BUILD_DIR); \
-	git clone git@github.com:oracle/docker-images.git; \
-	cd docker-images/OracleInstantClient/dockerfiles/$(ORACLE_CLIENT); \
-	docker build --pull -t oracle/instantclient:$(ORACLE_CLIENT) .; \
-	docker tag oracle/instantclient:$(ORACLE_CLIENT) casa/oracle-client:$(ORACLE_CLIENT); \
-	docker push $(DOCKER_USER)/oracle-client
 
 ora-run: # Run Oracle database
 	@echo "$(YEL)Runing Oracle database$(END)"
