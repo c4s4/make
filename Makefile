@@ -1,2 +1,2 @@
-include ~/.make/help.mk
-include ~/.make/*.mk
+include help.mk
+include *.mk
