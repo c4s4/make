@@ -13,7 +13,9 @@ ORACLE_SID=test
 ORACLE_PDB=test
 ORACLE_PWD=test
 ORACLE_CHAR=AL32UTF8
+ORACLE_DATA=~/.oracle/data
 DOCKER_USER=casa
+ORACLE_CLIENT=11
 # For Oracle XE 18
 # ORACLE_VER=18.4.0
 # ORACLE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm
@@ -35,20 +37,21 @@ ora-client: clean # Build image for Oracle client
 	@mkdir -p $(BUILD_DIR)
 	@cd $(BUILD_DIR); \
 	git clone git@github.com:oracle/docker-images.git; \
-	cd docker-images/OracleInstantClient/dockerfiles/18; \
-	docker build --pull -t oracle/instantclient:18 .; \
-	docker tag oracle/instantclient:18 casa/oracle-client:18; \
+	cd docker-images/OracleInstantClient/dockerfiles/$(ORACLE_CLIENT); \
+	docker build --pull -t oracle/instantclient:$(ORACLE_CLIENT) .; \
+	docker tag oracle/instantclient:11 casa/oracle-client:$(ORACLE_CLIENT); \
 	docker push $(DOCKER_USER)/oracle-client
 
 ora-start: # Start Oracle database
 	@echo "$(YEL)Starting Oracle database$(END)"
+	@mkdir -p $(ORACLE_DATA)
 	@docker run --name oracle \
 		-p 1521:1521 -p 5500:5500 \
 		-e ORACLE_SID=$(ORACLE_SID) \
 		-e ORACLE_PDB=$(ORACLE_PDB) \
 		-e ORACLE_PWD=$(ORACLE_PWD) \
 		-e ORACLE_CHARACTERSET=$(ORACLE_CHAR) \
-		-v /opt/oracle/data:/opt/oracle/oradata \
+		-v $(ORACLE_DATA):/opt/oracle/oradata \
 		--shm-size=1g \
 		$(DOCKER_USER)/oracle:$(ORACLE_VER)-xe
 
