@@ -6,6 +6,8 @@ PYTHON_VENV=$(PYTHON_HOME)/venv
 PYTHON=$(PYTHON_VENV)/bin/python
 PYTHON_REQ=$(PYTHON_HOME)/requirements.txt
 PYTHON_LINT=$(PYTHON_HOME)/pylint.cfg
+# if set will run specific test else will run all tests
+PYTHON_TEST=
 PYTHON_MOD=$(shell basename $(shell pwd))
 PYTHON_PKG=$(PYTHON_MOD)
 PYTHON_ITG=echo "Running integration test"
@@ -33,7 +35,7 @@ lint: # Validate source code
 test: # Run unit tests
 	@echo "$(YEL)Running unit tests$(END)"
 	@test -f $(PYTHON_ENV) && . $(PYTHON_ENV); \
-	$(PYTHON) -m unittest
+	$(PYTHON) -m unittest $(PYTHON_TEST)
 
 .PHONY: dist
 dist: clean # Generate distribution archive
