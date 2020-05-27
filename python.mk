@@ -4,12 +4,15 @@ BUILD_DIR=build
 PYTHON_HOME=$(shell pwd)
 PYTHON_VENV=$(PYTHON_HOME)/venv
 PYTHON=$(PYTHON_VENV)/bin/python
+PYTHON_RUN=$(PYTHON_HOME)/requirements.run
+PYTHON_DEV=$(PYTHON_HOME)/requirements.dev
 PYTHON_REQ=$(PYTHON_HOME)/requirements.txt
 PYTHON_LINT=$(PYTHON_HOME)/pylint.cfg
 # if set will run specific test else will run all tests
 PYTHON_TEST=
 PYTHON_MOD=$(shell basename $(shell pwd))
 PYTHON_PKG=$(PYTHON_MOD)
+PYTHON_PKF=LICENSE* MANIFEST.in
 PYTHON_ITG=echo "Running integration test"
 # environment file for test (must start with ./ if in same directory)
 PYTHON_ENV=./.env
@@ -25,11 +28,23 @@ venv: # Create virtual environment
 libs: venv # Install libraries
 	@echo "$(YEL)Installing libraries$(END)"
 	$(PYTHON_VENV)/bin/pip install -r $(PYTHON_REQ)
+	@test -f $(PYTHON_DEV) && $(PYTHON_VENV)/bin/pip install -r $(PYTHON_DEV)
+
+.PHONY: reqs
+reqs: venv # Generate requirements file
+	@echo "$(YEL)Generating requirements file$(END)"
+	$(PYTHON_VENV)/bin/pip install -r $(PYTHON_RUN)
+	$(PYTHON_VENV)/bin/pip freeze > $(PYTHON_REQ)
 
 .PHONY: lint
 lint: # Validate source code
 	@echo "$(YEL)Validating source code$(END)"
 	$(PYTHON_VENV)/bin/pylint --rcfile=$(PYTHON_LINT) $(PYTHON_MOD)
+
+.PHONY: watch
+watch: # Validate source code in watch
+	@echo "$(YEL)Validating source code in watch$(END)"
+	watch $(PYTHON_VENV)/bin/pylint --rcfile=$(PYTHON_LINT) $(PYTHON_MOD)
 
 .PHONY: test
 test: # Run unit tests
@@ -41,7 +56,10 @@ test: # Run unit tests
 dist: clean # Generate distribution archive
 	@echo "$(YEL)Generating distribution archive$(END)"
 	mkdir -p $(BUILD_DIR)
-	cp -r $(PYTHON_MOD) LICENSE* MANIFEST.in setup.py $(BUILD_DIR)/
+	cp -r $(PYTHON_MOD) setup.py $(BUILD_DIR)/
+	for file in $(PYTHON_PKF); do \
+		cp $$file $(BUILD_DIR); \
+	done
 	if [ -f README.rst ]; then \
 		cp README.rst $(BUILD_DIR)/; \
 	else \
