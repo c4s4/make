@@ -68,15 +68,18 @@ dist: clean # Generate distribution archive
 	sed -i 's/0.0.0/$(TAG)/g' $(BUILD_DIR)/setup.py
 	cd $(BUILD_DIR) && $(PYTHON) setup.py sdist -d .
 
-.PHONY: integ
-integ: dist # Run integration test
-	@echo "$(YEL)Running integration test$(END)"
-	@mkdir -p $(BUILD_DIR); \
+.PHONY: deploy
+deploy: dist # Deploy package locally
+	@echo "$(YEL)Deploying package locally$(END)"
 	cd $(BUILD_DIR); \
 	$(PYTHON) -m venv venv; \
 	venv/bin/pip install --upgrade pip; \
-	venv/bin/pip install ./$(PYTHON_PKG)-*.tar.gz; \
-	$(PYTHON_ITG)
+	venv/bin/pip install ./$(PYTHON_PKG)-*.tar.gz
+
+.PHONY: integ
+integ: deploy # Run integration test
+	@echo "$(YEL)Running integration test$(END)"
+	cd $(BUILD_DIR) && $(PYTHON_ITG)
 
 .PHONY: pypi
 pypi: clean # Test installation from Pypi
