@@ -21,3 +21,10 @@ WHI="\\033[97m"
 # end color
 end="\\033[0m"
 END="\\033[0m"
+# styles
+BOL="\\033[1m"
+DIM="\\033[2m"
+ITA="\\033[3m"
+UDL="\\033[4m"
+BLK="\\033[5m"
+RVS="\\033[7m"
