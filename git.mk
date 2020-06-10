@@ -35,3 +35,8 @@ squash: # Squash branch and merge on master
 tags: # List tags sorted by version
 	@echo "$(YEL)Listing tags sorted by version$(END)"
 	@git tag | sort -V
+
+.PHONY: updatesub
+updatesub: # Update submodules
+	@echo "$(RED)Updating submodules$(END)"
+	@git submodule update --remote
