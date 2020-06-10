@@ -11,6 +11,7 @@ PYTHON_LINT=$(PYTHON_HOME)/pylint.cfg
 # if set will run specific test else will run all tests
 PYTHON_TEST=
 PYTHON_MOD=$(shell basename $(shell pwd))
+PYTHON_ARGS=
 PYTHON_PKG=$(PYTHON_MOD)
 PYTHON_PKF=LICENSE* MANIFEST.in
 PYTHON_ITG=echo "Running integration test"
@@ -51,6 +52,12 @@ test: # Run unit tests
 	@echo "$(YEL)Running unit tests$(END)"
 	@test -f $(PYTHON_ENV) && . $(PYTHON_ENV); \
 	$(PYTHON) -m unittest $(PYTHON_TEST)
+
+.PHONY: run
+run: # Run application
+	@echo "$(YEL)Running application$(END)"
+	@test -f $(PYTHON_ENV) && . $(PYTHON_ENV); \
+	$(PYTHON) -m $(PYTHON_MOD) $(PYTHON_ARGS)
 
 .PHONY: dist
 dist: clean # Generate distribution archive
