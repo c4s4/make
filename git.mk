@@ -38,5 +38,5 @@ tags: # List tags sorted by version
 
 .PHONY: updatesub
 updatesub: # Update submodules
-	@echo "$(RED)Updating submodules$(END)"
+	@echo "$(YEL)Updating submodules$(END)"
 	@git submodule update --remote
