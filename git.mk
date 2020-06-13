@@ -2,8 +2,8 @@
 
 CURRENT := $(shell git rev-parse --abbrev-ref HEAD)
 
-.PHONY: tag
-tag: # Tag project (you must set TAG=X.Y.Z on command line)
+.PHONY: git-tag
+git-tag: # Tag project (you must set TAG=X.Y.Z on command line)
 	@echo "$(YEL)Tagging project$(END)"
 	@test '$(TAG)' != '' || (echo "$(RED)ERROR$(END) You must set TAG=name on command line"; exit 1)
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
@@ -11,8 +11,8 @@ tag: # Tag project (you must set TAG=X.Y.Z on command line)
 	@git tag -a $(TAG) -m  "Release $(TAG)"
 	@git push origin $(TAG)
 
-.PHONY: branch
-branch: # Create a branch from master (you must set BRANCH=name on command line)
+.PHONY: git-branch
+git-branch: # Create a branch from master (you must set BRANCH=name on command line)
 	@echo "$(YEL)Creating a branch from master$(END)"
 	@test '$(BRANCH)' != '' || (echo "$(RED)ERROR$(END) You must set BRANCH=name on command line" && exit 1)
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
@@ -20,8 +20,8 @@ branch: # Create a branch from master (you must set BRANCH=name on command line)
 	@git checkout -b $(BRANCH)
 	@git push -u origin $(BRANCH)
 
-.PHONY: squash
-squash: # Squash branch and merge on master
+.PHONY: git-squash
+git-squash: # Squash branch and merge on master
 	@echo "$(YEL)Squash branch and merge on master$(END)"
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
 	@test '$(CURRENT)' != 'master' || (echo "$(RED)ERROR$(END) You already are on branch master" && exit 1)
@@ -31,12 +31,12 @@ squash: # Squash branch and merge on master
 	@git commit
 	@git push origin master
 
-.PHONY: tags
-tags: # List tags sorted by version
+.PHONY: git-tags
+git-tags: # List tags sorted by version
 	@echo "$(YEL)Listing tags sorted by version$(END)"
 	@git tag | sort -V
 
-.PHONY: updatesub
-updatesub: # Update submodules
+.PHONY: git-update-sub
+git-update-sub: # Update submodules
 	@echo "$(YEL)Updating submodules$(END)"
 	@git submodule update --remote
