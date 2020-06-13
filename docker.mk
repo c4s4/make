@@ -10,14 +10,17 @@ docker-running: # Ensure docker is running
 		echo "Docker already running"; \
 	fi
 
+.PHONY: docker-build
 docker-build: docker-running # Build and start docker platform
 	@echo "$(YEL)Building and starting docker platform$(END)"
 	@docker-compose up --build --force-recreate --remove-orphans --detach
 
+.PHONY: docker-start
 docker-start: # Start docker platform
 	@echo "$(YEL)Starting docker platform$(END)"
 	@docker-compose start
 
+.PHONY: docker-stop
 docker-stop: # Stop docker platform
 	@echo "$(YEL)Stopping docker platform$(END)"
 	@docker-compose stop
