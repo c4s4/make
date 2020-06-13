@@ -19,6 +19,7 @@ DOCKER_NAME=oracle
 # ORACLE_VER=18.4.0
 # ORACLE_RPM=oracle-database-xe-18c-1.0-1.x86_64.rpm
 
+.PHONY: ora-image
 ora-image: clean # Build image for Oracle database
 	@echo "$(YEL)Building image for Oracle database$(END)"
 	@test -f /tmp/$(ORACLE_RPM) || (echo "$(RED)ERROR$(END): You must have downloaded oracle database at $(ORACLE_URL)"; exit 1)
@@ -31,6 +32,7 @@ ora-image: clean # Build image for Oracle database
 	docker tag oracle/database:$(ORACLE_VER)-xe $(DOCKER_USER)/oracle:$(ORACLE_VER)-xe; \
 	docker push $(DOCKER_USER)/oracle
 
+.PHONY: ora-run
 ora-run: # Run Oracle database
 	@echo "$(YEL)Runing Oracle database$(END)"
 	@docker run --name $(DOCKER_NAME) \
@@ -43,14 +45,17 @@ ora-run: # Run Oracle database
 		--shm-size=1g \
 		$(DOCKER_USER)/oracle:$(ORACLE_VER)-xe
 
+.PHONY: ora-start
 ora-start: # Start Oracle database
 	@echo "$(YEL)Starting Oracle database$(END)"
 	@docker start $(DOCKER_NAME)
 
+.PHONY: ora-stop
 ora-stop: # Stop Oracle database
 	@echo "$(YEL)Stopping Oracle database$(END)"
 	@docker stop $(DOCKER_NAME)
 
+.PHONY: ora-sqlplus
 ora-sqlplus: # Generate sqlplus script
 	@echo "$(YEL)Generating sqlplus script$(END)"
 	@echo '#!/bin/sh\n# Default connection URL: system/$(ORACLE_PWD)@$(ORACLE_SID)\n\nset -e\n\ndocker exec -i $(DOCKER_NAME) sqlplus "$$@" < /dev/stdin' > sqlplus
