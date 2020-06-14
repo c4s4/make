@@ -24,3 +24,8 @@ doc-start: # Start docker platform
 doc-stop: # Stop docker platform
 	@echo "$(YEL)Stopping docker platform$(END)"
 	@docker-compose stop
+
+.PHONY: doc-logs
+doc-logs: # Print logs of containers
+	@echo "$(YEL)Printing logs of containers$(END)"
+	@docker-compose logs -f
