@@ -11,7 +11,7 @@ doc-running: # Ensure docker is running
 	fi
 
 .PHONY: doc-build
-doc-build: doc-running # Build and start docker platform
+doc-build: # Build and start docker platform
 	@echo "$(YEL)Building and starting docker platform$(END)"
 	@docker-compose up --build --force-recreate --remove-orphans --detach
 
