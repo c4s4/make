@@ -28,8 +28,12 @@ py-venv: # Create virtual environment
 .PHONY: py-libs
 py-libs: py-venv # Install libraries
 	@echo "$(YEL)Installing libraries$(END)"
-	$(PYTHON_VENV)/bin/pip install -r $(PYTHON_REQ)
-	@test -f $(PYTHON_DEV) && $(PYTHON_VENV)/bin/pip install -r $(PYTHON_DEV)
+	@if [ -f $(PYTHON_REQ) ]; then \
+		 $(PYTHON_VENV)/bin/pip install -r $(PYTHON_REQ); \
+	fi
+	@if [ -f $(PYTHON_DEV) ]; then \
+		 $(PYTHON_VENV)/bin/pip install -r $(PYTHON_DEV); \
+	fi
 
 .PHONY: py-reqs
 py-reqs: py-venv # Generate requirements file
