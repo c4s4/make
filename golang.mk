@@ -108,5 +108,5 @@ go-tag: # Tag project
 	@git push origin $(TAG)
 
 .PHONY: go-release
-release: go-tag go-deploy go-archive # Perform a release
+go-release: go-tag go-deploy go-archive # Perform a release
 	@echo "$(GRE)OK$(EBD) Release done!"
