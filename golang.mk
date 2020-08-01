@@ -1,6 +1,7 @@
 # Parent makefile for Golang (https://github.com/c4s4/make)
 
 BUILD_DIR=build
+VERSION=
 GONAME=$(shell basename `pwd`)
 GOARGS=
 ifeq ($(GOTOOLS), )
@@ -32,7 +33,7 @@ GOTOOLBOX=github.com/mitchellh/gox \
 
 .PHONY: go-tools
 go-tools: # Install Go tools
-	@echo "$(YEL)Installing Go tools$(END)"
+	$(title)
 	@for tool in $(GOTOOLBOX); do \
 		echo "Installing $$tool"; \
 		GOPATH=$(GOTOOLS) GO111MODULE=off go get -u $$tool; \
@@ -40,33 +41,38 @@ go-tools: # Install Go tools
 
 .PHONY: go-fmt
 go-fmt: # Format Go source code
-	@echo "$(YEL)Formatting Go source code$(END)"
+	$(title)
 	@go fmt ./...
+
+.PHONY: go-test
+go-test: # Run tests
+	$(title)
+	@go test -cover ./...
 
 .PHONY: go-build
 go-build: go-clean # Build binary
-	@echo "$(YEL)Building binary$(END)"
+	$(title)
 	@mkdir -p $(BUILD_DIR)
-	@go build -ldflags "-s -f" -o $(BUILD_DIR)/$(GONAME) ./...
+	@go build -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/$(GONAME) ./...
 
 .PHONY: go-binaries
 go-binaries: go-clean # Build binaries
-	@echo "$(YEL)Building binaries$(END)"
+	$(title)
 	@mkdir -p $(BUILD_DIR)/bin
-	@gox -ldflags "-s -f" -output=$(BUILD_DIR)/bin/$(GONAME)-{{.OS}}-{{.Arch}} ./...
+	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -output=$(BUILD_DIR)/bin/$(GONAME)-{{.OS}}-{{.Arch}} ./...
 
 .PHONY: go-install
-go-install: # Install binaries in GOPATH
-	@echo "$(YEL)Installing binaries in GOPATH$(END)"
+go-install: go-build # Install binaries in GOPATH
+	$(title)
 	@cp $(BUILD_DIR)/$(GONAME) $${GOPATH}/bin/
 
 .PHONY: go-run
 go-run: go-build # Run project
-	@echo "$(YEL)Running project$(END)"
+	$(title)
 	@$(BUILD_DIR)/$(GONAME) $(GOARGS)
 
 .PHONY: go-clean
 go-clean: # Clean generated files and test cache
-	@echo "$(YEL)Cleaning generated files and test cache$(END)"
+	$(title)
 	@rm -rf $(BUILD_DIR)
 	@go clean -testcache
