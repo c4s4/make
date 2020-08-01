@@ -94,9 +94,9 @@ go-doc: # Generate documentation
 go-archive: go-binaries go-doc # Build distribution archive
 	$(title)
 	@mkdir -p $(BUILD_DIR)/$(GONAME)
-	@mv $(BUILD_DIR)/bin $(BUILD_DIR)/$(GONAME)
-	@mv $(BUILD_DIR)/README.pdf $(BUILD_DIR)/LICENSE.txt $(BUILD_DIR)/$(GONAME)
-	@cd $(BUILD_DIR) && tar cvf $(GONAME)-$(VERSION).tar $(GONAME)/ && gzip $(GONAME)-$(VERSION).tar
+	@mv $(BUILD_DIR)/bin $(BUILD_DIR)/$(GONAME)-$(VERSION)
+	@mv $(BUILD_DIR)/README.pdf $(BUILD_DIR)/LICENSE.txt $(BUILD_DIR)/$(GONAME)-$(VERSION)
+	@cd $(BUILD_DIR) && tar cvf $(GONAME)-$(VERSION).tar $(GONAME)-$(VERSION)/ && gzip $(GONAME)-$(VERSION).tar
 
 .PHONY: go-tag
 go-tag: # Tag project
