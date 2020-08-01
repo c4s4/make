@@ -1,7 +1,7 @@
 # Parent makefile for Golang (https://github.com/c4s4/make)
 
 BUILD_DIR=build
-GONAME=$(shell basename $(pwd))
+GONAME=$(shell basename `pwd`)
 GOARGS=
 ifeq ($(GOTOOLS), )
 	GOTOOLS=$${GOPATH}
