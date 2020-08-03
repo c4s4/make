@@ -110,3 +110,25 @@ go-tag: # Tag project
 .PHONY: go-release
 go-release: go-tag go-deploy go-archive # Perform a release
 	@echo "$(GRE)OK$(EBD) Release done!"
+
+.PHONY: go-docker
+go-docker: go-clean # Build docker image
+	$(title)
+	@mkdir -p $(BUILD_DIR)
+	@CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-s -f" -o $(BUILD_DIR)/$(GONAME) .
+	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
+		docker build -t casa/$(GONAME):$(VERSION) .; \
+		docker tag casa/$(GONAME):$(VERSION) casa/$(GONAME):latest; \
+	else \
+		docker build -t casa/$(GONAME) .; \
+	fi
+
+.PHONY: go-publish
+go-publish: go-docker # Publish docker image
+	$(title)
+	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
+		docker push casa/$(GONAME):$(VERSION); \
+		docker push casa/$(GONAME):latest; \
+	else \
+		docker push casa/$(GONAME); \
+	fi
