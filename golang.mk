@@ -127,8 +127,8 @@ go-docker: go-clean # Build docker image
 go-publish: go-docker # Publish docker image
 	$(title)
 	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
+		docker push casa/$(GONAME); \
+	else \
 		docker push casa/$(GONAME):$(VERSION); \
 		docker push casa/$(GONAME):latest; \
-	else \
-		docker push casa/$(GONAME); \
 	fi
