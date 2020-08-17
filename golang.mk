@@ -115,7 +115,7 @@ go-release: go-tag go-deploy go-archive # Perform a release
 go-docker: go-clean # Build docker image
 	$(title)
 	@mkdir -p $(BUILD_DIR)
-	@CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-s -f" -o $(BUILD_DIR)/$(GONAME) .
+	@CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/$(GONAME) .
 	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
 		docker build -t casa/$(GONAME):$(VERSION) .; \
 		docker tag casa/$(GONAME):$(VERSION) casa/$(GONAME):latest; \
