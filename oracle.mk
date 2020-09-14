@@ -21,7 +21,7 @@ DOCKER_NAME=oracle
 
 .PHONY: ora-image
 ora-image: clean # Build image for Oracle database
-	@echo "$(YEL)Building image for Oracle database$(END)"
+	$(title)
 	@test -f /tmp/$(ORACLE_RPM) || (echo "$(RED)ERROR$(END): You must have downloaded oracle database at $(ORACLE_URL)"; exit 1)
 	@mkdir -p $(BUILD_DIR)
 	@cd $(BUILD_DIR); \
@@ -34,7 +34,7 @@ ora-image: clean # Build image for Oracle database
 
 .PHONY: ora-run
 ora-run: # Run Oracle database
-	@echo "$(YEL)Runing Oracle database$(END)"
+	$(title)
 	@docker run --name $(DOCKER_NAME) \
 		-p 1521:1521 -p 5500:5500 \
 		-e ORACLE_SID=$(ORACLE_SID) \
@@ -47,16 +47,16 @@ ora-run: # Run Oracle database
 
 .PHONY: ora-start
 ora-start: # Start Oracle database
-	@echo "$(YEL)Starting Oracle database$(END)"
+	$(title)
 	@docker start $(DOCKER_NAME)
 
 .PHONY: ora-stop
 ora-stop: # Stop Oracle database
-	@echo "$(YEL)Stopping Oracle database$(END)"
+	$(title)
 	@docker stop $(DOCKER_NAME)
 
 .PHONY: ora-sqlplus
 ora-sqlplus: # Generate sqlplus script
-	@echo "$(YEL)Generating sqlplus script$(END)"
+	$(title)
 	@echo '#!/bin/sh\n# Default connection URL: system/$(ORACLE_PWD)@$(ORACLE_SID)\n\nset -e\n\ndocker exec -i $(DOCKER_NAME) sqlplus "$$@" < /dev/stdin' > sqlplus
 	@chmod +x sqlplus

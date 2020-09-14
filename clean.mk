@@ -4,5 +4,5 @@ BUILD_DIR=build
 
 .PHONY: clean
 clean: # Clean generated files
-	@echo "$(YEL)Deleting generated files$(END)"
+	$(title)
 	@rm -rf $(BUILD_DIR)

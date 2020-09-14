@@ -2,7 +2,7 @@
 
 .PHONY: doc-running
 doc-running: # Ensure docker is running
-	@echo "$(YEL)Ensuring docker is running$(END)"
+	$(title)
 	@if [ `systemctl show --property ActiveState docker` != "ActiveState=active" ]; then \
 		echo "Starting docker"; \
 		sudo systemctl start docker; \
@@ -12,20 +12,20 @@ doc-running: # Ensure docker is running
 
 .PHONY: doc-build
 doc-build: # Build and start docker platform
-	@echo "$(YEL)Building and starting docker platform$(END)"
+	$(title)
 	@docker-compose up --build --force-recreate --remove-orphans --detach
 
 .PHONY: doc-start
 doc-start: # Start docker platform
-	@echo "$(YEL)Starting docker platform$(END)"
+	$(title)
 	@docker-compose start
 
 .PHONY: doc-stop
 doc-stop: # Stop docker platform
-	@echo "$(YEL)Stopping docker platform$(END)"
+	$(title)
 	@docker-compose stop
 
 .PHONY: doc-logs
 doc-logs: # Print logs of containers
-	@echo "$(YEL)Printing logs of containers$(END)"
+	$(title)
 	@docker-compose logs -f

@@ -20,14 +20,14 @@ PYTHON_ENV=./.env
 
 .PHONY: py-venv
 py-venv: # Create virtual environment
-	@echo "$(YEL)Creating virtual environment$(END)"
+	$(title)
 	rm -rf $(PYTHON_VENV)
 	python -m venv $(PYTHON_VENV)
 	$(PYTHON_VENV)/bin/pip install --upgrade pip
 
 .PHONY: py-libs
 py-libs: py-venv # Install libraries
-	@echo "$(YEL)Installing libraries$(END)"
+	$(title)
 	@if [ -f $(PYTHON_REQ) ]; then \
 		 $(PYTHON_VENV)/bin/pip install -r $(PYTHON_REQ); \
 	fi
@@ -37,35 +37,35 @@ py-libs: py-venv # Install libraries
 
 .PHONY: py-reqs
 py-reqs: py-venv # Generate requirements file
-	@echo "$(YEL)Generating requirements file$(END)"
+	$(title)
 	$(PYTHON_VENV)/bin/pip install -r $(PYTHON_RUN)
 	$(PYTHON_VENV)/bin/pip freeze > $(PYTHON_REQ)
 
 .PHONY: py-lint
 py-lint: # Validate source code
-	@echo "$(YEL)Validating source code$(END)"
+	$(title)
 	$(PYTHON_VENV)/bin/pylint --rcfile=$(PYTHON_LINT) $(PYTHON_MOD)
 
 .PHONY: py-watch
 py-watch: # Validate source code in watch
-	@echo "$(YEL)Validating source code in watch$(END)"
+	$(title)
 	watch $(PYTHON_VENV)/bin/pylint --rcfile=$(PYTHON_LINT) $(PYTHON_MOD)
 
 .PHONY: py-test
 py-test: # Run unit tests
-	@echo "$(YEL)Running unit tests$(END)"
+	$(title)
 	@test -f $(PYTHON_ENV) && . $(PYTHON_ENV); \
 	$(PYTHON) -m unittest $(PYTHON_TEST)
 
 .PHONY: py-run
 py-run: # Run application
-	@echo "$(YEL)Running application$(END)"
+	$(title)
 	@test -f $(PYTHON_ENV) && . $(PYTHON_ENV); \
 	$(PYTHON) -m $(PYTHON_MOD) $(PYTHON_ARGS)
 
 .PHONY: py-dist
 py-dist: clean # Generate distribution archive
-	@echo "$(YEL)Generating distribution archive$(END)"
+	$(title)
 	mkdir -p $(BUILD_DIR)
 	cp -r $(PYTHON_MOD) setup.py $(BUILD_DIR)/
 	for file in $(PYTHON_PKF); do \
@@ -81,7 +81,7 @@ py-dist: clean # Generate distribution archive
 
 .PHONY: py-deploy
 py-deploy: py-dist # Deploy package locally
-	@echo "$(YEL)Deploying package locally$(END)"
+	$(title)
 	cd $(BUILD_DIR); \
 	$(PYTHON) -m venv venv; \
 	venv/bin/pip install --upgrade pip; \
@@ -89,12 +89,12 @@ py-deploy: py-dist # Deploy package locally
 
 .PHONY: py-integ
 py-integ: py-deploy # Run integration test
-	@echo "$(YEL)Running integration test$(END)"
+	$(title)
 	cd $(BUILD_DIR) && $(PYTHON_ITG)
 
 .PHONY: py-pi
 py-pi: clean # Test installation from Pypi
-	@echo "$(YEL)Testing installation from Pypi$(END)"
+	$(title)
 	@mkdir -p $(BUILD_DIR); \
 	cd $(BUILD_DIR); \
 	$(PYTHON) -m venv venv; \
@@ -104,9 +104,9 @@ py-pi: clean # Test installation from Pypi
 
 .PHONY: py-upload
 py-upload: py-dist # Upload distribution archive
-	@echo "$(YEL)Uploading distribution archive$(END)"
+	$(title)
 	cd $(BUILD_DIR) && $(PYTHON) setup.py sdist -d . register upload
 
 .PHONY: py-release
 py-release: clean py-lint py-test py-integ git-tag py-upload # Release project on Pypi
-	@echo "$(YEL)Released project on Pypi$(END)"
+	$(title)
