@@ -44,4 +44,4 @@ git-update-sub: # Update submodules
 .PHONY: git-id
 git-id: # Print commit ID
 	$(title)
-	@echo "Commit ID: $(CURRENT)"
+	@echo "Commit ID: $(shell git rev-parse HEAD)"
