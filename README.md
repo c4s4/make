@@ -3,7 +3,7 @@
 These are parent makefiles for my projects. To use them, clone this project in your home directory with:
 
 ```
-$ git clone git@github.com:c4s4/make.git ~/.make
+$ git clone https://github.com/c4s4/make.git ~/.make
 ```
 
 Note that running this command clones on branch *master*, you can freeze a given version with:
