@@ -1,7 +1,7 @@
 # Parent makefile for Help (https://github.com/c4s4/make)
 
 define title =
-	@echo "$(YEL)$(shell make-desc $@)$(END)"
+	@echo "$(bYEL)$(bla) $@ $(END) $(YEL)$(shell make-desc $@)$(END)"
 endef
 
 .PHONY: help
