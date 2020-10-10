@@ -1,10 +1,12 @@
 # Parent makefile for Django (https://github.com/c4s4/make)
 
+SERVER_PORT=0:8000
+
 dj-runserver: # Run Django development server
 	$(title)
 	$(PYTHON) manage.py runserver $(SERVER_PORT)
 
-dj-makemigrations: # Generate migration scripts
+dj-migrations: # Generate migration scripts
 	$(title)
 	$(PYTHON) manage.py makemigrations
 
