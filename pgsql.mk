@@ -10,6 +10,9 @@
 # ALTER ROLE myprojectuser SET timezone TO 'UTC';
 # GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
 
+# to avoid typing your password, you should write ~/.pgpass file such as:
+# hostname:port:database:username:password
+
 # following connection variables should be set in .env file imported with:
 # include .env
 # export
