@@ -4,10 +4,11 @@ BUILD_DIR=build
 PYTHON_HOME=$(shell pwd)
 PYTHON_VENV=$(PYTHON_HOME)/venv
 PYTHON=$(PYTHON_VENV)/bin/python
-PYTHON_RUN=$(PYTHON_HOME)/requirements.run
-PYTHON_DEV=$(PYTHON_HOME)/requirements.dev
+PYTHON_CFG=$(PYTHON_HOME)
+PYTHON_RUN=$(PYTHON_CFG)/requirements.run
+PYTHON_DEV=$(PYTHON_CFG)/requirements.dev
 PYTHON_REQ=$(PYTHON_HOME)/requirements.txt
-PYTHON_LINT=$(PYTHON_HOME)/pylint.cfg
+PYTHON_LINT=$(PYTHON_CFG)/pylint.cfg
 # if set will run specific test else will run all tests
 PYTHON_TEST=
 PYTHON_MOD=$(shell basename $(shell pwd))
