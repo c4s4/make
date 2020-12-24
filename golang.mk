@@ -4,6 +4,7 @@ BUILD_DIR = "build"
 VERSION = "UNKNOWN"
 GONAME = $(shell basename `pwd`)
 GOARGS =
+ARCHIVE = "$(GONAME)-$(VERSION).tar.gz"
 GODEST = "casa@sweetohm.net:/home/web/dist"
 ifeq ($(GOTOOLS), )
 	GOTOOLS = $${GOPATH}
