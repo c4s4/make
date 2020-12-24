@@ -136,7 +136,7 @@ go-tag: go-version # Tag project
 	@git push origin $(TAG)
 
 .PHONY: go-release
-go-release: go-tag go-deploy go-archive # Perform a release
+go-release: go-version go-test go-tag go-deploy go-archive # Perform a release
 	@echo "$(GRE)OK$(EBD) Release done!"
 
 .PHONY: go-docker
