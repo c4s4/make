@@ -137,7 +137,7 @@ go-tag: go-version # Tag project
 
 .PHONY: go-release
 go-release: go-version go-test go-tag go-deploy go-archive # Perform a release
-	@echo "$(GRE)OK$(EBD) Release done!"
+	@echo "$(GRE)OK$(END) Release done!"
 
 .PHONY: go-docker
 go-docker: go-clean # Build docker image
