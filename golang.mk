@@ -1,36 +1,56 @@
 # Parent makefile for Golang (https://github.com/c4s4/make)
 
-BUILD_DIR=build
-VERSION=
-GONAME=$(shell basename `pwd`)
-GOARGS=
-GODEST="casa@sweetohm.net:/home/web/dist"
+BUILD_DIR = "build"
+VERSION = "UNKNOWN"
+GONAME = $(shell basename `pwd`)
+GOARGS =
+GODEST = "casa@sweetohm.net:/home/web/dist"
 ifeq ($(GOTOOLS), )
-	GOTOOLS=$${GOPATH}
+	GOTOOLS = $${GOPATH}
 endif
-GOTOOLBOX=github.com/mitchellh/gox \
-          github.com/itchio/gothub \
-          github.com/fzipp/gocyclo \
-          golang.org/x/lint/golint \
-          github.com/gordonklaus/ineffassign \
-          github.com/client9/misspell/cmd/misspell \
-          github.com/acroca/go-symbols \
-          github.com/cweill/gotests/... \
-          github.com/davidrjenni/reftools/cmd/fillstruct \
-          github.com/fatih/gomodifytags \
-          github.com/go-delve/delve/cmd/dlv \
-          github.com/godoctor/godoctor \
-          github.com/haya14busa/goplay/cmd/goplay \
-          github.com/josharian/impl \
-          github.com/mdempsky/gocode \
-          github.com/ramya-rao-a/go-outline \
-          github.com/rogpeppe/godef \
-          github.com/sqs/goreturns \
-          github.com/stamblerre/gocode \
-          github.com/uudashr/gopkgs/cmd/gopkgs \
-          golang.org/x/tools/cmd/gorename \
-          golang.org/x/tools/cmd/guru \
-          golang.org/x/tools/gopls \
+GOTOOLBOX = github.com/mitchellh/gox \
+            github.com/fzipp/gocyclo \
+            golang.org/x/lint/golint \
+            github.com/gordonklaus/ineffassign \
+            github.com/client9/misspell/cmd/misspell \
+            github.com/acroca/go-symbols \
+            github.com/cweill/gotests/... \
+            github.com/davidrjenni/reftools/cmd/fillstruct \
+            github.com/fatih/gomodifytags \
+            github.com/godoctor/godoctor \
+            github.com/haya14busa/goplay/cmd/goplay \
+            github.com/josharian/impl \
+            github.com/mdempsky/gocode \
+            github.com/ramya-rao-a/go-outline \
+            github.com/rogpeppe/godef \
+            github.com/sqs/goreturns \
+            github.com/stamblerre/gocode \
+            github.com/uudashr/gopkgs/cmd/gopkgs \
+            golang.org/x/tools/cmd/gorename \
+            golang.org/x/tools/cmd/guru \
+            golang.org/x/tools/gopls
+#            github.com/itchio/gothub
+#            github.com/go-delve/delve/cmd/dlv
+GOOSARCH = darwin/amd64 \
+           darwin/arm64 \
+           freebsd/386 \
+           freebsd/amd64 \
+           freebsd/arm \
+           linux/386 \
+           linux/amd64 \
+           linux/arm \
+           linux/mips \
+           linux/mips64 \
+           linux/mips64le \
+           linux/mipsle \
+           linux/s390x \
+           netbsd/386 \
+           netbsd/amd64 \
+           netbsd/arm \
+           openbsd/386 \
+           openbsd/amd64 \
+           windows/386 \
+           windows/amd64
 
 .PHONY: go-tools
 go-tools: # Install Go tools
@@ -45,6 +65,7 @@ go-clean: # Clean generated files and test cache
 	$(title)
 	@rm -rf $(BUILD_DIR)
 	@go clean -testcache
+	@go clean -cache
 
 .PHONY: go-fmt
 go-fmt: # Format Go source code
@@ -55,6 +76,14 @@ go-fmt: # Format Go source code
 go-test: # Run tests
 	$(title)
 	@go test -cover ./...
+	@echo "$(GRE)OK$(END)"
+
+go-version: # Check that version was passed on command line
+	$(title)
+	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
+		echo "$(RED)ERROR$(END) you must pass VERSION=X.Y.Z on command line to release"; \
+		exit 1; \
+	fi
 
 .PHONY: go-build
 go-build: go-clean # Build binary
@@ -66,7 +95,7 @@ go-build: go-clean # Build binary
 go-binaries: go-clean # Build binaries
 	$(title)
 	@mkdir -p $(BUILD_DIR)/bin
-	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -osarch '!darwin/386' -output=$(BUILD_DIR)/bin/$(GONAME)-{{.OS}}-{{.Arch}} ./...
+	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -osarch '$(GOOSARCH)' -output=$(BUILD_DIR)/bin/ ./...
 
 .PHONY: go-run
 go-run: go-build # Run project
@@ -99,9 +128,8 @@ go-archive: go-binaries go-doc # Build distribution archive
 	@cd $(BUILD_DIR) && tar cvf $(GONAME)-$(VERSION).tar $(GONAME)-$(VERSION)/ && gzip $(GONAME)-$(VERSION).tar
 
 .PHONY: go-tag
-go-tag: # Tag project
+go-tag: go-version # Tag project
 	$(title)
-	@test '$(VERSION)' != '' || (echo "$(RED)ERROR$(END) You must set TAG=name on command line"; exit 1)
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
 	@test `git rev-parse --abbrev-ref HEAD)` = 'master' || (echo "$(RED)ERROR$(END) You are not on branch master" && exit 1)
 	@git tag -a $(VERSION) -m  "Release $(TAG)"
