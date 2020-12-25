@@ -32,26 +32,7 @@ GOTOOLBOX = github.com/mitchellh/gox \
             golang.org/x/tools/gopls
 #            github.com/itchio/gothub
 #            github.com/go-delve/delve/cmd/dlv
-GOOSARCH = darwin/amd64 \
-           darwin/arm64 \
-           freebsd/386 \
-           freebsd/amd64 \
-           freebsd/arm \
-           linux/386 \
-           linux/amd64 \
-           linux/arm \
-           linux/mips \
-           linux/mips64 \
-           linux/mips64le \
-           linux/mipsle \
-           linux/s390x \
-           netbsd/386 \
-           netbsd/amd64 \
-           netbsd/arm \
-           openbsd/386 \
-           openbsd/amd64 \
-           windows/386 \
-           windows/amd64
+GOOSARCH = $(shell go tool dist list | grep -v android)
 
 .PHONY: go-tools
 go-tools: # Install Go tools
