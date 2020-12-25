@@ -5,13 +5,7 @@ GITHUB_USER = "c4s4"
 GITHUB_REPO = $(shell basename `pwd`)
 GITHUB_TOKEN = "abcdefghijklmnopqrstuvwxyz0123456789"
 
-github-title: # Prompt for release title
-	$(title)
-
-github-changes: # Prompt for changes
-	$(title)
-
-github-release: github-title github-changes # Create Github release
+github-release: # Create Github release
 	$(title)
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
 	@test `git rev-parse --abbrev-ref HEAD` = 'master' || (echo "$(RED)ERROR$(END) You are not on branch master" && exit 1)
