@@ -71,13 +71,13 @@ go-version: # Check that version was passed on command line
 go-build: go-clean # Build binary
 	$(title)
 	@mkdir -p $(BUILD_DIR)
-	@go build -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/$(GONAME) ./...
+	@go build -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/ ./...
 
 .PHONY: go-binaries
 go-binaries: go-clean # Build binaries
 	$(title)
 	@mkdir -p $(BUILD_DIR)/bin
-	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -osarch '$(GOOSARCH)' -output=$(BUILD_DIR)/bin/ ./...
+	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -osarch '$(GOOSARCH)' -output=$(BUILD_DIR)/bin/{{.Dir}}-{{.OS}}-{{.Arch}} ./...
 
 .PHONY: go-run
 go-run: go-build # Run project
