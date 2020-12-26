@@ -36,11 +36,6 @@ git-tags: # List tags sorted by version
 	$(title)
 	@git tag | sort -V
 
-.PHONY: git-update-sub
-git-update-sub: # Update submodules
-	$(title)
-	@git submodule update --remote
-
 .PHONY: git-id
 git-id: # Print commit ID
 	$(title)
