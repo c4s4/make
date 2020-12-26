@@ -117,10 +117,6 @@ go-tag: go-version # Tag project
 	@git tag -a $(VERSION) -m  "Release $(TAG)"
 	@git push origin $(TAG)
 
-.PHONY: go-release
-go-release: go-version go-test go-tag go-deploy go-archive # Perform a release
-	@echo "$(GRE)OK$(END) Release done!"
-
 .PHONY: go-docker
 go-docker: go-clean # Build docker image
 	$(title)
