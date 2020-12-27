@@ -6,40 +6,26 @@ GONAME = $(shell basename `pwd`)
 GOARGS =
 ARCHIVE = "$(GONAME)-$(VERSION).tar.gz"
 GODEST = "casa@sweetohm.net:/home/web/dist"
+GOCYCLO = 15
+GOOSARCH = $(shell go tool dist list | grep -v android)
+GOTOOLBOX = \
+	github.com/mitchellh/gox \
+    github.com/itchio/gothub \
+    golang.org/x/tools/gopls \
+    golang.org/x/lint/golint \
+    github.com/fzipp/gocyclo/cmd/gocyclo \
+    github.com/gordonklaus/ineffassign \
+    github.com/client9/misspell/cmd/misspell
 ifeq ($(GOTOOLS), )
 	GOTOOLS = $${GOPATH}
 endif
-GOTOOLBOX = github.com/mitchellh/gox \
-            github.com/fzipp/gocyclo \
-            golang.org/x/lint/golint \
-            github.com/gordonklaus/ineffassign \
-            github.com/client9/misspell/cmd/misspell \
-            github.com/acroca/go-symbols \
-            github.com/cweill/gotests/... \
-            github.com/davidrjenni/reftools/cmd/fillstruct \
-            github.com/fatih/gomodifytags \
-            github.com/godoctor/godoctor \
-            github.com/haya14busa/goplay/cmd/goplay \
-            github.com/josharian/impl \
-            github.com/mdempsky/gocode \
-            github.com/ramya-rao-a/go-outline \
-            github.com/rogpeppe/godef \
-            github.com/sqs/goreturns \
-            github.com/stamblerre/gocode \
-            github.com/uudashr/gopkgs/cmd/gopkgs \
-            golang.org/x/tools/cmd/gorename \
-            golang.org/x/tools/cmd/guru \
-            golang.org/x/tools/gopls
-#            github.com/itchio/gothub
-#            github.com/go-delve/delve/cmd/dlv
-GOOSARCH = $(shell go tool dist list | grep -v android)
 
 .PHONY: go-tools
 go-tools: # Install Go tools
 	$(title)
 	@for tool in $(GOTOOLBOX); do \
 		echo "Installing $$tool"; \
-		GOPATH=$(GOTOOLS) GO111MODULE=off go get -u $$tool; \
+		GOPATH=$(GOTOOLS) go get -u $$tool; \
 	done
 
 .PHONY: go-clean
@@ -53,6 +39,28 @@ go-clean: # Clean generated files and test cache
 go-fmt: # Format Go source code
 	$(title)
 	@go fmt ./...
+
+.PHONY: go-check
+go-check: # Check Go code
+	$(title)
+	@mkdir -p $(BUILD_DIR)
+	@echo "Checking code with fmt"
+	@gofmt -l $(shell find . -name "*.go") > /tmp/gofmt.log
+	@if [ -s /tmp/gofmt.log ]; then \
+		echo "$(RED)ERROR$(END) in file(s) $(shell cat /tmp/gofmt.log)"; \
+		ext 1; \
+	fi
+	@echo "Checking code with golint"
+	@golint ./...
+	@echo "Checking code with vet"
+	@go vet ./...
+	@echo "Checking code with gocyclo"
+	@gocyclo -over $(GOCYCLO) $(shell find . -name "*.go")
+	@echo "Checking code with ineffassign"
+	@ineffassign $(shell find . -name "*.go")
+	@echo "Checking code with misspell"
+	@misspell $(shell find . -name "*.go")
+	@echo "$(GRE)OK$(END) Go code checked"
 
 .PHONY: go-test
 go-test: # Run tests
