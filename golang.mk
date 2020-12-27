@@ -66,7 +66,7 @@ go-check: # Check Go code
 go-test: # Run tests
 	$(title)
 	@go test -cover ./...
-	@echo "$(GRE)OK$(END)"
+	@echo "$(GRE)OK$(END) tests passed"
 
 go-version: # Check that version was passed on command line
 	$(title)
