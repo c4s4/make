@@ -6,4 +6,4 @@ endef
 
 .PHONY: help
 help: # Print help on Makefile
-	@make-help -root
+	@make-help -root -mute
