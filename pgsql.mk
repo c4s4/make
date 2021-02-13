@@ -9,6 +9,7 @@
 # ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
 # ALTER ROLE myprojectuser SET timezone TO 'UTC';
 # GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;
+# UPDATE pg_database SET datcollate='fr_FR.UTF-8', datctype='fr_FR.UTF-8' WHERE datname='myproject';
 
 # to avoid typing your password, you should write ~/.pgpass file such as:
 # hostname:port:database:username:password
