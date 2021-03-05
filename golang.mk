@@ -48,7 +48,7 @@ go-check: # Check Go code
 	@gofmt -l $(shell find . -name "*.go") > /tmp/gofmt.log
 	@if [ -s /tmp/gofmt.log ]; then \
 		echo "$(RED)ERROR$(END) in file(s) $(shell cat /tmp/gofmt.log)"; \
-		ext 1; \
+		exit 1; \
 	fi
 	@echo "Checking code with golint"
 	@golint ./...
