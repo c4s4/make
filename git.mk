@@ -50,3 +50,4 @@ git-update-branchs: # Update branches with origin
 git-squash: # Squash commits (ACHTUNG! modifies Git history, handle with care)
 	$(title)
 	@echo -n "Commit ID: "; read commit; git rebase -i $$commit
+	@git push --force
