@@ -20,8 +20,8 @@ git-branch: # Create a branch from master (you must set BRANCH=name on command l
 	@git checkout -b $(BRANCH)
 	@git push -u origin $(BRANCH)
 
-.PHONY: git-squash
-git-squash: # Squash branch and merge on master
+.PHONY: git-merge-squash
+git-merge-squash: # Squash branch and merge on master
 	$(title)
 	@git diff-index --quiet HEAD -- || (echo "$(RED)ERROR$(END) There are uncommitted changes" && exit 1)
 	@test '$(GIT_BRANCH)' != 'master' || (echo "$(RED)ERROR$(END) You already are on branch master" && exit 1)
@@ -45,3 +45,8 @@ git-id: # Print commit ID
 git-update-branchs: # Update branches with origin
 	$(title)
 	@git remote update origin --prune
+
+.PHONY: git-squash
+git-squash: # Squash commits (ACHTUNG! modifies Git history, handle with care)
+	$(title)
+	@echo -n "Commit ID: "; read commit; git rebase -i $$commit
