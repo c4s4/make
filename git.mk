@@ -40,3 +40,8 @@ git-tags: # List tags sorted by version
 git-id: # Print commit ID
 	$(title)
 	@echo "Commit ID: $(shell git rev-parse HEAD)"
+
+.PHONY: git-update-branchs
+git-update-branchs: # Update branches with origin
+	$(title)
+	@git remote update origin --prune
