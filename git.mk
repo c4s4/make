@@ -41,11 +41,6 @@ git-id: # Print commit ID
 	$(title)
 	@echo "Commit ID: $(shell git rev-parse HEAD)"
 
-.PHONY: git-update-branchs
-git-update-branchs: # Update branches with origin
-	$(title)
-	@git remote update origin --prune
-
 .PHONY: git-squash
 git-squash: # Squash commits (ACHTUNG! modifies Git history, handle with care)
 	$(title)
