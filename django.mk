@@ -21,3 +21,8 @@ dj-migrate: # Run migration scripts
 dj-shell: # Run Django shell
 	$(title)
 	$(PYTHON) manage.py shell
+
+.PHONY: dj-test
+dj-test: # Run Django test suite
+	$(title)
+	$(PYTHON) manage.py test
