@@ -3,6 +3,7 @@
 BUILD_DIR = "build"
 VERSION = "UNKNOWN"
 GONAME = $(shell basename `pwd`)
+GOPACKAGE = "./..."
 GOARGS =
 ARCHIVE = "$(GONAME)-$(VERSION).tar.gz"
 GODEST = "casa@sweetohm.net:/home/web/dist"
@@ -38,7 +39,7 @@ go-clean: # Clean generated files and test cache
 .PHONY: go-fmt
 go-fmt: # Format Go source code
 	$(title)
-	@go fmt ./...
+	@go fmt $(GOPACKAGE)
 
 .PHONY: go-check
 go-check: # Check Go code
@@ -51,9 +52,9 @@ go-check: # Check Go code
 		exit 1; \
 	fi
 	@echo "Checking code with golint"
-	@golint ./...
+	@golint $(GOPACKAGE)
 	@echo "Checking code with vet"
-	@go vet ./...
+	@go vet $(GOPACKAGE)
 	@echo "Checking code with gocyclo"
 	@gocyclo -over $(GOCYCLO) $(shell find . -name "*.go")
 	@echo "Checking code with ineffassign"
@@ -65,7 +66,7 @@ go-check: # Check Go code
 .PHONY: go-test
 go-test: # Run tests
 	$(title)
-	@go test -cover ./...
+	@go test -cover $(GOPACKAGE)
 	@echo "$(GRE)OK$(END) tests passed"
 
 go-version: # Check that version was passed on command line
@@ -79,13 +80,13 @@ go-version: # Check that version was passed on command line
 go-build: go-clean # Build binary
 	$(title)
 	@mkdir -p $(BUILD_DIR)
-	@go build -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/ ./...
+	@go build -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/$(GONAME) $(GOPACKAGE)
 
 .PHONY: go-binaries
 go-binaries: go-clean # Build binaries
 	$(title)
 	@mkdir -p $(BUILD_DIR)/bin
-	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -osarch '$(GOOSARCH)' -output=$(BUILD_DIR)/bin/{{.Dir}}-{{.OS}}-{{.Arch}} ./...
+	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -osarch '$(GOOSARCH)' -output=$(BUILD_DIR)/bin/{{.Dir}}-{{.OS}}-{{.Arch}} $(GOPACKAGE)
 
 .PHONY: go-run
 go-run: go-build # Run project
