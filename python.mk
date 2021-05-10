@@ -1,23 +1,25 @@
 # Parent makefile for Python (https://github.com/c4s4/make)
 
-BUILD_DIR=build
-PYTHON_HOME=$(shell pwd)
-PYTHON_VENV=$(PYTHON_HOME)/venv
-PYTHON=$(PYTHON_VENV)/bin/python
-PYTHON_CFG=$(PYTHON_HOME)
-PYTHON_RUN=$(PYTHON_CFG)/requirements.run
-PYTHON_DEV=$(PYTHON_CFG)/requirements.dev
-PYTHON_REQ=$(PYTHON_HOME)/requirements.txt
-PYTHON_LINT=$(PYTHON_CFG)/pylint.cfg
+BUILD_DIR = build
+PYTHON_HOME = $(shell pwd)
+PYTHON_VENV = $(PYTHON_HOME)/venv
+PYTHON = $(PYTHON_VENV)/bin/python
+PYTHON_CFG = $(PYTHON_HOME)
+PYTHON_RUN = $(PYTHON_CFG)/requirements.run
+PYTHON_DEV = $(PYTHON_CFG)/requirements.dev
+PYTHON_REQ = $(PYTHON_HOME)/requirements.txt
+PYTHON_LINT = $(PYTHON_CFG)/pylint.cfg
 # if set will run specific test else will run all tests
-PYTHON_TEST=
-PYTHON_MOD=$(shell basename $(shell pwd))
-PYTHON_ARGS=
-PYTHON_PKG=$(PYTHON_MOD)
-PYTHON_PKF=LICENSE* MANIFEST.in
-PYTHON_ITG=echo "Running integration test"
+PYTHON_TEST =
+PYTHON_MOD = $(shell basename $(shell pwd))
+PYTHON_ARGS =
+PYTHON_PKG = $(PYTHON_MOD)
+PYTHON_PKF = LICENSE* MANIFEST.in
+PYTHON_ITG = echo "Running integration test"
+# list of source files with doctests
+PYTHON_DOCTESTS =
 # environment file for test (must start with ./ if in same directory)
-PYTHON_ENV=./.env
+PYTHON_ENV = ./.env
 
 .PHONY: py-venv
 py-venv: # Create virtual environment
@@ -57,6 +59,11 @@ py-test: # Run unit tests
 	$(title)
 	@test -f $(PYTHON_ENV) && . $(PYTHON_ENV); \
 	$(PYTHON) -m unittest $(PYTHON_TEST)
+
+.PHONY: py-doctest
+py-doctest: # Run Python doctests
+	$(title)
+	@$(PYTHON) -m doctest -v $(PYTHON_DOCTESTS)
 
 .PHONY: py-run
 py-run: # Run application
