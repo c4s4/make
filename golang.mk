@@ -58,7 +58,7 @@ go-check: # Check Go code
 	@echo "Checking code with gocyclo"
 	@gocyclo -over $(GOCYCLO) $(shell find . -name "*.go")
 	@echo "Checking code with ineffassign"
-	@ineffassign $(shell find . -name "*.go")
+	@ineffassign $(GOPACKAGE)
 	@echo "Checking code with misspell"
 	@misspell $(shell find . -name "*.go")
 	@echo "$(GRE)OK$(END) Go code checked"
