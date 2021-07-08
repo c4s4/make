@@ -134,19 +134,10 @@ go-docker: go-clean # Build docker image
 	@mkdir -p $(BUILD_DIR)
 	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-X main.Version=$(VERSION) -w -s" -o $(BUILD_DIR)/$(GONAME) .
 	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
-		if [ `uname -m` = "x86_64" ]; then \
-			docker build -t casa/$(GONAME) .; \
-		else \
-			docker buildx build --platform=linux/amd64 -t casa/go-docker .; \
-		fi \
+		docker buildx build --platform=$(GOOS)/$(GOARCH) -t casa/$(GONAME) .; \
 	else \
-		if [ `uname -m` = "x86_64" ]; then \
-			docker build -t casa/$(GONAME):$(VERSION) .; \
-			docker tag casa/$(GONAME):$(VERSION) casa/$(GONAME):latest; \
-		else \
-			docker buildx build --platform=linux/amd64 -t casa/$(GONAME):$(VERSION) .; \
-			docker tag casa/$(GONAME):$(VERSION) casa/$(GONAME):latest; \
-		fi \
+		docker buildx build --platform=$(GOOS)/$(GOARCH) -t casa/$(GONAME):$(VERSION) .; \
+		docker tag casa/$(GONAME):$(VERSION) casa/$(GONAME):latest; \
 	fi
 
 .PHONY: go-publish
