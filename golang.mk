@@ -9,6 +9,8 @@ ARCHIVE = "$(GONAME)-$(VERSION).tar.gz"
 GODEST = "casa@sweetohm.net:/home/web/dist"
 GOCYCLO = 15
 GOOSARCH = $(shell go tool dist list | grep -v android)
+GOOS = linux
+GOARCH = amd64
 GOTOOLBOX = \
 	github.com/mitchellh/gox \
     github.com/itchio/gothub \
@@ -130,7 +132,7 @@ go-tag: go-version # Tag project
 go-docker: go-clean # Build docker image
 	$(title)
 	@mkdir -p $(BUILD_DIR)
-	@CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/$(GONAME) .
+	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-X main.Version=$(VERSION) -w -s" -o $(BUILD_DIR)/$(GONAME) .
 	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
 		docker build -t casa/$(GONAME) .; \
 	else \
