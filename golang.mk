@@ -18,7 +18,8 @@ GOTOOLBOX = \
     golang.org/x/lint/golint \
     github.com/fzipp/gocyclo/cmd/gocyclo \
     github.com/gordonklaus/ineffassign \
-    github.com/client9/misspell/cmd/misspell
+    github.com/client9/misspell/cmd/misspell \
+	github.com/securego/gosec
 ifeq ($(GOTOOLS), )
 	GOTOOLS = $${GOPATH}
 endif
@@ -63,6 +64,13 @@ go-check: # Check Go code
 	@ineffassign $(GOPACKAGE)
 	@echo "Checking code with misspell"
 	@misspell $(shell find . -name "*.go")
+	@echo "Checking code with gosec"
+	@gosec -out /tmp/gosec.log -log /tmp/gosec.log -fmt text $(GOPACKAGE) || true
+	@if [ -s /tmp/gosec.log ]; then \
+		echo "$(RED)ERROR$(END)"; \
+		cat /tmp/gosec.log; \
+		exit 1; \
+	fi
 	@echo "$(GRE)OK$(END) Go code checked"
 
 .PHONY: go-test
