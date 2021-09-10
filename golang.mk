@@ -65,7 +65,7 @@ go-check: # Check Go code
 	@echo "Checking code with misspell"
 	@misspell $(shell find . -name "*.go")
 	@echo "Checking code with gosec"
-	@gosec -out /tmp/gosec.log -log /tmp/gosec.log -fmt text $(GOPACKAGE) || true
+	@gosec -out /tmp/gosec.log -log /tmp/gosec.log -fmt text -no-fail $(GOPACKAGE)
 	@if [ -s /tmp/gosec.log ]; then \
 		echo "$(RED)ERROR$(END)"; \
 		cat /tmp/gosec.log; \
