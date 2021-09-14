@@ -18,8 +18,9 @@ GOTOOLBOX = \
     golang.org/x/lint/golint \
     github.com/fzipp/gocyclo/cmd/gocyclo \
     github.com/gordonklaus/ineffassign \
-    github.com/client9/misspell/cmd/misspell \
-	github.com/securego/gosec
+    github.com/client9/misspell/cmd/misspell
+	# github.com/securego/gosec can't be installed as other tools, to install it, type:
+	# curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest
 ifeq ($(GOTOOLS), )
 	GOTOOLS = $${GOPATH}
 endif
