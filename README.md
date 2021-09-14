@@ -22,4 +22,6 @@ include ~/.make/python.mk
 
 Some makefiles (such as *help.mk*) use [Make Tools](https://github.com/c4s4/make-tools).
 
+These makefiles are released under Apache 2.0 license.
+
 *Enjoy!*
