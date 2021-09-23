@@ -18,7 +18,12 @@ GOTOOLBOX = \
     golang.org/x/lint/golint \
     github.com/fzipp/gocyclo/cmd/gocyclo \
     github.com/gordonklaus/ineffassign \
-    github.com/client9/misspell/cmd/misspell
+    github.com/client9/misspell/cmd/misspell \
+	\
+	github.com/uudashr/gopkgs/v2/cmd/gopkgs \
+	github.com/go-delve/delve/cmd/dlv \
+	github.com/go-delve/delve/cmd/dlv@master \
+	honnef.co/go/tools/cmd/staticcheck
 	# github.com/securego/gosec can't be installed as other tools, to install it, type:
 	# curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest
 ifeq ($(GOTOOLS), )
@@ -81,6 +86,14 @@ go-test: # Run tests
 	@go test -cover $(GOPACKAGE)
 	@echo "$(GRE)OK$(END) tests passed"
 
+.PHONY: go-test
+go-cover: # Generate unit tests coverage report and print it in browser
+	$(title)
+	@mkdir -p $(BUILD_DIR)
+	@go test -coverprofile $(BUILD_DIR)/cover.out $(GOPACKAGE)
+	@go tool cover -html=$(BUILD_DIR)/cover.out -o $(BUILD_DIR)/coverage.html
+	@go tool cover -html=$(BUILD_DIR)/cover.out
+
 go-version: # Check that version was passed on command line
 	$(title)
 	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
@@ -89,13 +102,13 @@ go-version: # Check that version was passed on command line
 	fi
 
 .PHONY: go-build
-go-build: go-clean # Build binary
+go-build: # Build binary
 	$(title)
 	@mkdir -p $(BUILD_DIR)
-	@go build -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/$(GONAME) $(GOPACKAGE)
+	@go build -ldflags "-X main.Version=$(VERSION) -s -f" -o $(BUILD_DIR)/ $(GOPACKAGE)
 
 .PHONY: go-binaries
-go-binaries: go-clean # Build binaries
+go-binaries: # Build binaries
 	$(title)
 	@mkdir -p $(BUILD_DIR)/bin
 	@gox -ldflags "-X main.Version=$(VERSION) -s -f" -osarch '$(GOOSARCH)' -output=$(BUILD_DIR)/bin/{{.Dir}}-{{.OS}}-{{.Arch}} $(GOPACKAGE)
@@ -139,7 +152,7 @@ go-tag: go-version # Tag project
 	@git push origin $(TAG)
 
 .PHONY: go-docker
-go-docker: go-clean # Build docker image
+go-docker: # Build docker image
 	$(title)
 	@mkdir -p $(BUILD_DIR)
 	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-X main.Version=$(VERSION) -w -s" -o $(BUILD_DIR)/$(GONAME) .

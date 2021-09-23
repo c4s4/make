@@ -8,6 +8,7 @@ default: check test
 
 check: go-check
 test: go-test
+cover: go-cover
 release: go-release
 
 .PHONY: go-release
