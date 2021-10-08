@@ -17,7 +17,7 @@ $ git checkout c8d8b9893ec3465f83813b8a8b6ce9c2cfe81124
 Then you can use these parent makefiles in your own with lines such as:
 
 ```
-include ~/.make/python.mk
+include ~/.make/_python.mk
 ```
 
 Some makefiles (such as *help.mk*) use [Make Tools](https://github.com/c4s4/make-tools).
