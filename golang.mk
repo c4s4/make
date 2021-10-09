@@ -1,6 +1,6 @@
 # Parent makefile for Golang projects (https://github.com/c4s4/make)
 
-include ~/.make/_basics.mk
+include ~/.make/basics.mk
 include ~/.make/_golang.mk
 
 .DEFAULT_GOAL :=
