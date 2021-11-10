@@ -4,9 +4,9 @@ include ~/.make/basics.mk
 include ~/.make/_golang.mk
 
 .DEFAULT_GOAL :=
-default: check test
+default: lint test
 
-check: go-check
+lint: go-lint
 test: go-test
 cover: go-cover
 release: go-release

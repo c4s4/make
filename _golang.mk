@@ -7,36 +7,7 @@ GOPACKAGE = "./..."
 GOARGS =
 ARCHIVE = "$(GONAME)-$(VERSION).tar.gz"
 GODEST = "casa@sweetohm.net:/home/web/dist"
-GOCYCLO = 15
 GOOSARCH = $(shell go tool dist list | grep -v android)
-GOOS = linux
-GOARCH = amd64
-GOTOOLBOX = \
-	github.com/mitchellh/gox \
-    github.com/itchio/gothub \
-    golang.org/x/tools/gopls \
-    golang.org/x/lint/golint \
-    github.com/fzipp/gocyclo/cmd/gocyclo \
-    github.com/gordonklaus/ineffassign \
-    github.com/client9/misspell/cmd/misspell \
-	\
-	github.com/uudashr/gopkgs/v2/cmd/gopkgs \
-	github.com/go-delve/delve/cmd/dlv \
-	github.com/go-delve/delve/cmd/dlv@master \
-	honnef.co/go/tools/cmd/staticcheck
-	# github.com/securego/gosec can't be installed as other tools, to install it, type:
-	# curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(go env GOPATH)/bin latest
-ifeq ($(GOTOOLS), )
-	GOTOOLS = $${GOPATH}
-endif
-
-.PHONY: go-tools
-go-tools: # Install Go tools
-	$(title)
-	@for tool in $(GOTOOLBOX); do \
-		echo "Installing $$tool"; \
-		GOPATH=$(GOTOOLS) go get -u $$tool; \
-	done
 
 .PHONY: go-clean
 go-clean: # Clean generated files and test cache
@@ -50,34 +21,10 @@ go-fmt: # Format Go source code
 	$(title)
 	@go fmt $(GOPACKAGE)
 
-.PHONY: go-check
-go-check: # Check Go code
+.PHONY: go-lint
+go-lint: # Check Go code
 	$(title)
-	@mkdir -p $(BUILD_DIR)
-	@echo "Checking code with fmt"
-	@gofmt -l $(shell find . -name "*.go") > /tmp/gofmt.log
-	@if [ -s /tmp/gofmt.log ]; then \
-		echo "$(RED)ERROR$(END) in file(s) $(shell cat /tmp/gofmt.log)"; \
-		exit 1; \
-	fi
-	@echo "Checking code with golint"
-	@golint $(GOPACKAGE)
-	@echo "Checking code with vet"
-	@go vet $(GOPACKAGE)
-	@echo "Checking code with gocyclo"
-	@gocyclo -over $(GOCYCLO) $(shell find . -name "*.go")
-	@echo "Checking code with ineffassign"
-	@ineffassign $(GOPACKAGE)
-	@echo "Checking code with misspell"
-	@misspell $(shell find . -name "*.go")
-	@echo "Checking code with gosec"
-	@rm -f /tmp/gosec.err
-	@gosec -out /tmp/gosec.log -log /tmp/gosec.log -fmt text $(GOPACKAGE) || touch /tmp/gosec.err
-	@if [ -f /tmp/gosec.err ]; then \
-		echo "$(RED)ERROR$(END)"; \
-		cat /tmp/gosec.log; \
-		exit 1; \
-	fi
+	@golangci-lint run $(GOPACKAGE)
 	@echo "$(GRE)OK$(END) Go code checked"
 
 .PHONY: go-test
@@ -155,11 +102,11 @@ go-tag: go-version # Tag project
 go-docker: # Build docker image
 	$(title)
 	@mkdir -p $(BUILD_DIR)
-	@GOOS=$(GOOS) GOARCH=$(GOARCH) go build -ldflags "-X main.Version=$(VERSION) -w -s" -o $(BUILD_DIR)/$(GONAME) .
+	@GOOS=linux GOARCH=amd64 go build -ldflags "-X main.Version=$(VERSION) -w -s" -o $(BUILD_DIR)/$(GONAME) .
 	@if [ "$(VERSION)" = "UNKNOWN" ]; then \
-		docker buildx build --platform=$(GOOS)/$(GOARCH) -t casa/$(GONAME) .; \
+		docker buildx build --platform=linux/amd64 -t casa/$(GONAME) .; \
 	else \
-		docker buildx build --platform=$(GOOS)/$(GOARCH) -t casa/$(GONAME):$(VERSION) .; \
+		docker buildx build --platform=linux/amd64 -t casa/$(GONAME):$(VERSION) .; \
 		docker tag casa/$(GONAME):$(VERSION) casa/$(GONAME):latest; \
 	fi
 
