@@ -42,3 +42,21 @@ pgsql-restore: # Restore PostgreSQL database
 	@echo "Type file name to restore:"
 	@read file; \
 	gunzip -c $$file | pg_restore -h $(PGSQL_HOSTNAME) -p $(PGSQL_PORT) -d $(PGSQL_DATABASE) -U $(PGSQL_USERNAME) -w -c
+
+# Docker backup and restore
+
+# doc-backup: # Backup PostgreSQL database
+# 	$(title)
+# 	@docker-compose exec -e PGPASSWORD=$(POSTGRES_PASSWORD) postgresql \
+# 		pg_dump -h $(POSTGRES_HOSTNAME) -p $(POSTGRES_PORT) -d $(POSTGRES_DB) -U $(POSTGRES_USER) \
+# 		-w -F tar -f /backup/$(POSTGRES_DB)-$(shell date +%Y-%m-%d-%H-%M).tar
+
+# doc-restore: # Restore PostgreSQL database
+# 	$(title)
+# 	echo "Available backup files:"
+# 	@cd $(POSTGRES_BACKUP_DIR); ls $(POSTGRES_DB)-*.tar
+# 	@echo "File name to restore:"
+# 	@read file; \
+# 	docker-compose exec -e PGPASSWORD=$(POSTGRES_PASSWORD) postgresql \
+# 		pg_restore -h $(POSTGRES_HOSTNAME) -p $(POSTGRES_PORT) -d $(POSTGRES_DB) -U $(POSTGRES_USER) \
+# 		-w -c /backup/$$file
