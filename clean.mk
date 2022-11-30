@@ -1,6 +1,6 @@
-# Parent makefile for Build (https://github.com/c4s4/make)
+# Makefile for cleaning
 
-BUILD_DIR=build
+BUILD_DIR = build
 
 .PHONY: clean
 clean: # Clean generated files
