@@ -6,7 +6,7 @@ GONAME = $(shell basename `pwd`)
 GOPACKAGE = "./..."
 GOARGS =
 ARCHIVE = "$(GONAME)-$(VERSION).tar.gz"
-GODEST = "casa@sweetohm.net:/home/web/dist"
+GODEST = "casa@sweetohm.net:/web/app/dist"
 GOOSARCH = $(shell go tool dist list | grep -v android)
 
 .PHONY: go-clean
